@@ -21,7 +21,6 @@ key_df = key_df.withColumnRenamed("Bounce Rate",'Bounce_Rate')
 key_df = key_df.withColumnRenamed('Pages / Session','Pages_per_Session')
 chp_df = chp_df.withColumnRenamed('Landing Page','Landing_Page')
 
-
 # Saving the data to BigQuery
 key_df.write.format('bigquery') \
   .option('table', 'retail-immersion:bqtest.Key_table') \
