@@ -49,7 +49,7 @@ order by total_revenue desc) a inner join
 group by product_brand
 order by total_qty desc) b on a.product_brand = b.product_brand)""")
 df.write.format('bigquery') \
-  .option('table', 'retail-immersion:bqtest.quant_ship/sold_per_brand') \
+  .option('table', 'retail-immersion:bqtest.quant_shipped_sold_per_brand') \
   .save()
 df = spark.sql("""select day,sum(revenue) total_revenue from txn group by day order by total_revenue desc""")
 df.write.format('bigquery') \
