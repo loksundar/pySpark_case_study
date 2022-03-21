@@ -20,7 +20,7 @@ from pyspark.sql.functions import *
 txn_df = txn_df.withColumn('date_of_visit',to_date(txn_df.date_of_visit, 'yyyyMMdd'))
 txn_df = txn_df.withColumn('day_Num',date_format(col("date_of_visit"), "d"))
 txn_df = txn_df.withColumn('month',month(txn_df.date_of_visit))
-txn_df = txn_df.withColumn('date_time',to_timestamp(col("date_of_visit"))).show(5)
+txn_df = txn_df.withColumn('date_time',to_timestamp(col("date_of_visit")))
 txn_df = txn_df.withColumn('day',date_format(col("date_of_visit"), "EEEE"))
 txn_df.show(5)
 
