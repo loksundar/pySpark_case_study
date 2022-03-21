@@ -24,6 +24,11 @@ txn_df = txn_df.withColumn('date_time',to_timestamp(col("date_of_visit")))
 txn_df = txn_df.withColumn('day',date_format(col("date_of_visit"), "EEEE"))
 txn_df.show(5)
 
-txn_df.createOrReplaceTempView("txn_table")
+txn_df.createOrReplaceTempView("txn")
+df = spark.sql("""select day,count(visit_number) as num_of_visits from txn group by day order by num_of_visits desc""")
+df.write.format('bigquery') \
+  .option('table', 'retail-immersion:bqtest.visits_by_weekday') \
+  .save()
+
 
 
