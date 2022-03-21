@@ -1,11 +1,9 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, DoubleType, StringType
-appName = "PySpark Reding file"
-master = "local"
 spark = SparkSession \
   .builder \
-  .master(master) \
-  .appName(appName) \
+  .master("local") \
+  .appName("PySpark Reding file") \
   .getOrCreate()
 # Use the Cloud Storage bucket for temporary BigQuery export data used
 # by the connector.
