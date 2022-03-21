@@ -15,5 +15,26 @@ spark.conf.set('temporaryGcsBucket', bucket)
 df = spark.read.format('bigquery').option('project','retail-immersion').option('table','retail-immersion:bqtest.txn_table ').load()
 #df = spark.read.format('bigquery').option('project','retail-immersion').option('table','bqtest.txn_table ').load()
 #df = spark.read.format('bigquery').option('project','retail-immersion').option('table','txn_table ').load()
-print(df.schema)
+
 df.show()
+
+df.createOrReplaceTempView("txn_table")
+df2 = spark.sql("""CREATE OR REPLACE TABLE  txn_table AS
+(SELECT
+date_of_visit,
+EXTRACT(WEEK FROM date_of_visit) AS weekN,
+format_datetime('%A',date_of_visit) AS day, Time_Stamp, user_id, visit_number, channel, txn, revenue, product_id,
+qty, product_brand, FORMAT_DATE('%B', date_of_visit) AS month, 
+
+    CAST(DIV(EXTRACT(DAY FROM date_of_visit), 7) + 1 AS STRING) 
+   AS week_of_month1, 
+   
+CONCAT(CAST(DIV(EXTRACT(DAY FROM date_of_visit), 7) + 1 AS STRING),"-",FORMAT_DATE('%B', date_of_visit)) AS week_of_month
+FROM (
+SELECT  PARSE_DATE('%Y%m%d', CAST(date_of_visit AS STRING)) AS date_of_visit,  
+ Time_Stamp, user_id, visit_number, 
+channel, txn, revenue, product_id, qty, product_brand
+  FROM txn_table
+))""")
+df2.show(3)
+
