@@ -80,7 +80,7 @@ df.write.format('bigquery') \
 
 table_id = 'retail-immersion.bqtest.final_table0'
 client.delete_table(table_id, not_found_ok=True)
-df = spark.sql("""select channel , day , count(qty) as total_units , sum(revenue) as total_Revenue from txn 
+df = spark.sql("""select channel , day , count(qty) as total_units , sum(revenue) as total_Revenue, from txn 
 group by grouping sets ((channel,day),(channel),(day),()) order by channel""")
 df.write.format('bigquery') \
   .option('table', 'retail-immersion:bqtest.final_table0') \
@@ -91,6 +91,13 @@ df = spark.sql("""select channel , day ,count(visit_number) as num_of_visits , s
 group by grouping sets ((channel,day),(channel),(day),()) order by channel""")
 df.write.format('bigquery') \
   .option('table', 'retail-immersion:bqtest.final_table1') \
+  .save()
+table_id = 'retail-immersion.bqtest.test0'
+client.delete_table(table_id, not_found_ok=True)
+df = spark.sql("""select channel , day , count(qty) as total_units , sum(revenue) as total_Revenue,count(visit_number) as num_of_visits , sum(txn) as no_of_txns from txn 
+group by grouping sets ((channel,day),(channel),(day),()) order by channel""")
+df.write.format('bigquery') \
+  .option('table', 'retail-immersion:bqtest.test0') \
   .save()
 """
 
