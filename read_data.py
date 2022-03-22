@@ -78,4 +78,10 @@ df.write.format('bigquery') \
 key_df = spark.read.csv(file_path+"Keywords data.csv",header=True)
 key_df = key_df.withColumnRenamed("Bounce Rate",'Bounce_Rate')
 key_df = key_df.withColumnRenamed('Pages / Session','Pages_per_Session')
-
+key_df.createOrReplaceTempView("key")
+table_id = 'retail-immersion.bqtest.KEY_Table1'
+client.delete_table(table_id, not_found_ok=True)
+df = spark.sql("select Bounce_Rate,Revenue/Cost as ROAS,Cost*1000/Clicks as CPM, Sessions*Pages_per_Session as Page_Impressions, Clicks*100/(Sessions*Pages_per_Session) as CTR_N from key")
+df.write.format('bigquery') \
+  .option('table', 'retail-immersion:bqtest.KEY_Table1') \
+  .save()
