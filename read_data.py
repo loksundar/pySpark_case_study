@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, DoubleType, StringType
 from pyspark.sql.functions import *
+from google.cloud import bigquery
 spark = SparkSession \
   .builder \
   .master("local") \
