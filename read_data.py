@@ -97,7 +97,7 @@ df.write.format('bigquery') \
 table_id = 'retail-immersion.bqtest.final_table'
 client.delete_table(table_id, not_found_ok=True)
 df = spark.sql("""select channel , day , count(qty) as total_units , sum(revenue) as total_Revenue from txn 
-group by grouping sets ((channel,day),(channel),(day),()) order by channel""").show())
+group by grouping sets ((channel,day),(channel),(day),()) order by channel""").show()
 df.write.format('bigquery') \
   .option('table', 'retail-immersion:bqtest.final_table') \
   .save()
