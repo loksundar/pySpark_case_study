@@ -39,7 +39,18 @@ txn_df = txn_df.withColumn('date_time',to_timestamp(col("date_of_visit")))
 txn_df = txn_df.withColumn('day',date_format(col("date_of_visit"), "EEEE"))
 client = bigquery.Client()
 txn_df.createOrReplaceTempView("txn")
-
+# Delete after one run 
+table_id = 'retail-immersion.bqtest.visits_per_channel_per_day'
+client.delete_table(table_id, not_found_ok=True)
+table_id = 'retail-immersion.bqtest.visits_per_channel'
+client.delete_table(table_id, not_found_ok=True)
+table_id = 'retail-immersion.bqtest.visits_by_weekday'
+client.delete_table(table_id, not_found_ok=True)
+table_id = 'retail-immersion.bqtest.rev_per_day'
+client.delete_table(table_id, not_found_ok=True)
+table_id = 'retail-immersion.bqtest.rev_per_channel'
+client.delete_table(table_id, not_found_ok=True)
+####
 
 table_id = 'retail-immersion.bqtest.trans_on_brands'
 client.delete_table(table_id, not_found_ok=True)
@@ -82,32 +93,26 @@ df.write.format('bigquery') \
   .option('table', 'retail-immersion:bqtest.final_table1') \
   .save()
 """
-table_id = 'retail-immersion.bqtest.rev_per_channel'
-client.delete_table(table_id, not_found_ok=True)
+
 df = spark.sql("select channel,sum(revenue) total_revenue from txn group by channel order by total_revenue desc;")
 df.write.format('bigquery') \
   .option('table', 'retail-immersion:bqtest.rev_per_channel') \
   .save()
-table_id = 'retail-immersion.bqtest.rev_per_day'
-client.delete_table(table_id, not_found_ok=True)
+
 df = spark.sql("select day,sum(revenue) total_revenue from txn group by day order by total_revenue desc")
 df.write.format('bigquery') \
   .option('table', 'retail-immersion:bqtest.rev_per_day') \
   .save()
 df = spark.sql("select day,count(visit_number) as num_of_visits from txn group by day order by num_of_visits desc")
-table_id = 'retail-immersion.bqtest.visits_by_weekday'
-client.delete_table(table_id, not_found_ok=True)
+
 df.write.format('bigquery') \
   .option('table', 'retail-immersion:bqtest.visits_by_weekday') \
   .save()
   df = spark.sql("select channel,count(visit_number) num_of_visits from txn group by channel order by num_of_visits desc")
-table_id = 'retail-immersion.bqtest.visits_per_channel'
-client.delete_table(table_id, not_found_ok=True)
+
 df.write.format('bigquery') \
   .option('table', 'retail-immersion:bqtest.visits_per_channel') \
   .save()
-  table_id = 'retail-immersion.bqtest.visits_per_channel_per_day'
-client.delete_table(table_id, not_found_ok=True)
 df = spark.sql("select day,channel,count(visit_number) num_of_visits from txn group by day,channel order by num_of_visits desc")
 df.write.format('bigquery') \
   .option('table', 'retail-immersion:bqtest.visits_per_channel_per_day') \
