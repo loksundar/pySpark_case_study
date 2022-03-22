@@ -70,7 +70,7 @@ chp_df = chp_df.na.fill(value="0")
 chp_df.createOrReplaceTempView("chn")
 table_id = 'retail-immersion.bqtest.CHN_Table1'
 client.delete_table(table_id, not_found_ok=True)
-df = spark.sql("select channel, sum(bounces) as bounces , sum(txn) as no_of_txn,sum(revenue) as total_revenue, count(Cost) as Total_Cost from chn group by channel")
+df = spark.sql("select channel, sum(bounces) as bounces , sum(txn) as no_of_txn,sum(revenue) as total_revenue, sum(Cost) as Total_Cost,sum(revenue)/sum(Cost) as ROS from chn group by channel")
 df.write.format('bigquery') \
   .option('table', 'retail-immersion:bqtest.CHN_Table1') \
   .save()
