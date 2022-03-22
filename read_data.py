@@ -94,14 +94,7 @@ df.na.fill("ALL")
 df.write.format('bigquery') \
   .option('table', 'retail-immersion:bqtest.final_table1') \
   .save()
-table_id = 'retail-immersion.bqtest.test0'
-client.delete_table(table_id, not_found_ok=True)
-df = spark.sql("""select channel , day , count(qty) as total_units , sum(revenue) as total_Revenue,count(visit_number) as num_of_visits , sum(txn) as no_of_txns from txn 
-group by grouping sets ((channel,day),(channel),(day),()) order by channel""")
-df.na.fill("ALL")
-df.write.format('bigquery') \
-  .option('table', 'retail-immersion:bqtest.test0') \
-  .save()
+
 """
 
 df = spark.sql("select channel,sum(revenue) total_revenue from txn group by channel order by total_revenue desc;")
