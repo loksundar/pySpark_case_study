@@ -37,7 +37,7 @@ txn_df = txn_df.withColumn('day_Num',date_format(col("date_of_visit"), "d"))
 txn_df = txn_df.withColumn('month',month(txn_df.date_of_visit))
 txn_df = txn_df.withColumn('date_time',to_timestamp(col("date_of_visit")))
 txn_df = txn_df.withColumn('day',date_format(col("date_of_visit"), "EEEE"))
-txn_df.show(5)
+
 client = bigquery.Client()
 txn_df.createOrReplaceTempView("txn")
 df = spark.sql("""select day,count(visit_number) as num_of_visits from txn group by day order by num_of_visits desc""")
@@ -97,7 +97,7 @@ df.write.format('bigquery') \
 table_id = 'retail-immersion.bqtest.final_table'
 client.delete_table(table_id, not_found_ok=True)
 df = spark.sql("""select channel , day , count(qty) as total_units , sum(revenue) as total_Revenue from txn 
-group by grouping sets ((channel,day),(channel),(day),()) order by channel""").show()
+group by grouping sets ((channel,day),(channel),(day),()) order by channel""")
 df.write.format('bigquery') \
   .option('table', 'retail-immersion:bqtest.final_table') \
   .save()
